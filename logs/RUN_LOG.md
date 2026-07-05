@@ -150,3 +150,34 @@ private emails, or sensitive application notes.
 - **Rebuilt:** `node scripts/build-instructions.mjs --promote` → `AGENTS.md` + `CLAUDE.md` regenerated; `CLAUDE.md` now imports `@SNICKERDOODLE.md`.
 - **Untouched:** `data/` CSVs (real company names containing "mycroft") and prior RUN_LOG history (append-only).
 - **Result:** conformance + doctor green; no stale `MYCROFT.md` outside data/history.
+
+
+## YYYY-MM-DD — case-backend-role-authenticity v0.1.0
+
+- **Runner:** <name>
+- **Status:** RUNNABLE-SAMPLE
+- **Inputs:** public job URL, role title, sample role-score input
+- **Commands:** `npm run verify`; `npm run doctor`; `REALLOCATION_ENGINE_PORTALS=data/ats/portals.example.yml npm run ats:scan -- --dry-run`; `npm run score -- data/examples/ch11-roles.json`; `npm run ats:liveness -- <job-url>`
+- **Outputs:** terminal output captured in worked run; role-score JSON/Markdown sample output
+- **Result:** posting-liveness gate tested; sample role scorer ran; backend-authenticity classifier remains TODO and human-reviewed
+- **Open issues:** implement backend signal extractor; add backend signal rubric; test across multiple SWE, implementation, and support postings
+
+## 2026-07-05 — case-backend-role-authenticity v0.1.0
+
+- **Runner:** Sakshi Tapkir
+- **Status:** RUNNABLE-SAMPLE
+- **Inputs:** public Amazon Software Development Engineer posting; `data/examples/ch11-roles.json`; `data/ats/portals.example.yml`; break-test URL `https://example.com/not-a-real-job`
+- **Commands:** `npm run verify`; `npm run doctor`; `REALLOCATION_ENGINE_PORTALS=data/ats/portals.example.yml npm run ats:scan -- --dry-run`; `npm run score -- data/examples/ch11-roles.json`; `npm run score -- data/examples/ch11-roles.json --out-dir reports/generated --md reports/generated/backend-authenticity-score-sample.md`; `npm run ats:liveness -- https://www.amazon.jobs/en/jobs/3175845/software-development-engineer-2026`; `npm run ats:liveness -- https://example.com/not-a-real-job`
+- **Outputs:** terminal output captured in `assignments/submissions/sakshi-tapkir/worked-run.md`; role-score report generated at `reports/generated/backend-authenticity-score-sample.md`
+- **Result:** posting liveness gate passed for the public Amazon posting and failed for the deliberate bad URL; sample role scorer ran successfully; backend-authenticity classification remains human-reviewed because extractor script is TODO.
+- **Open issues:** [TODO: DEV] implement backend signal extractor; [TODO: DATA SOURCE] add backend authenticity rubric; [TODO: REPORT FIELD] add backend responsibility evidence section to generated reports; test on multiple backend, solutions, and support postings.
+
+## YYYY-MM-DD — case-backend-role-authenticity v0.1.0
+
+- **Runner:** <name>
+- **Status:** RUNNABLE-SAMPLE
+- **Inputs:** public job URL, role title, sample role-score input
+- **Commands:** `npm run verify`; `npm run doctor`; `REALLOCATION_ENGINE_PORTALS=data/ats/portals.example.yml npm run ats:scan -- --dry-run`; `npm run score -- data/examples/ch11-roles.json`; `npm run ats:liveness -- <job-url>`
+- **Outputs:** terminal output captured in worked run; role-score JSON/Markdown sample output
+- **Result:** posting-liveness gate tested; sample role scorer ran; backend-authenticity classifier remains TODO and human-reviewed
+- **Open issues:** implement backend signal extractor; add backend signal rubric; test across multiple SWE, implementation, and support postings
