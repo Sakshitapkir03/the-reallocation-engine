@@ -75,8 +75,7 @@ Results: 0 active  1 expired  0 uncertain
 ```
 ### `grep -i "scale ai"` / `grep -i "^scale"` against sponsorship CSV
 ```
-(no match for "scale ai")
-MINDSCALE AI INC,...
+MINDSCALE AI INC,Other Technology,mindscaleai.com,SAN FRANCISCO,CA,94114,...
 SCALE MEDICINE INC,...
 SCALED INFERENCE INC,...
 SCALEFACTOR INC,...
@@ -89,7 +88,7 @@ SCALEWORKS FUND II LP,...
 SCALEWORKS FUND III LP,...
 SCALEWORKS VENTURE FINANCE FUND I LP,...
 ```
-No row matches "Scale AI" (the employer behind the posting). Eleven "Scale"-prefixed companies matched, none of them this employer.
+The exact-substring search for "scale ai" returned one row: MindScale AI Inc, a different, unrelated company whose name happens to contain that substring. There is no real row for "Scale AI, Inc." (the actual employer behind the posting). The broader prefix search for "^scale" additionally returned eleven other "Scale"-prefixed companies, none of them this employer either. This is a live example of the employer-name-collision failure mode named in the domain justification: a substring or prefix match can look like sponsorship evidence at a glance, when it is actually an unrelated company.
 ### `npm run score -- data/examples/ch11-roles.json`
 ```
 scored 5 roles → Apply 2 · Consider 1 · Skip 2 (skip 40%)
@@ -152,7 +151,7 @@ By: Sakshi Tapkir, 2026-07-17
 |---|---|---|
 | ats:liveness (Scale AI URL) | active | Confirmation the posting is reachable |
 | ats:liveness (ADP URL, deliberate break attempt) | expired, insufficient content | A liveness failure so the run stops before scoring |
-| grep against sponsorship CSV | no match for Scale AI | Either a match or an honest no-row result |
+| grep against sponsorship CSV | no exact-name match; substring collision with MindScale AI Inc | Either a match or an honest no-row result |
 | score (sample fixture) | 5 roles, Apply 2, Consider 1, Skip 2 | Reproduction of Ch.11's documented output |
 | grep against SOC compact table | SOC 15-1252, score 3.834 | A real SOC-level record if one exists |
 ### Did not test
