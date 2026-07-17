@@ -1,7 +1,7 @@
 ---
-status: DRAFT
+status: RUNNABLE-SAMPLE
 todos_open: 5
-last_gate: null
+last_gate: "sample-run, 2026-07-17, assignments/submissions/sakshi-tapkir/worked-run.md"
 attestation: null
 recipe_version: 0.1.0
 ---
