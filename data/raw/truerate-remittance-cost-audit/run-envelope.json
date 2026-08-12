@@ -1,0 +1,6 @@
+{
+  "amount_usd": 1000,
+  "providers": ["Wise", "Remitly_Economy", "Western_Union"],
+  "horizon_days": 7,
+  "sample_mode": true
+}

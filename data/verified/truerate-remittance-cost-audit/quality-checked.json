@@ -1,0 +1,14 @@
+{
+  "verified_records": [
+    "Wise",
+    "Remitly_Economy",
+    "Western_Union"
+  ],
+  "record_count": 3,
+  "duplicates": [],
+  "rejects": [],
+  "flags": [
+    "mid_market_rate snapshot is 3 day(s) old (as_of=2026-08-09) -- treat as potentially stale; this recipe has NOT yet implemented an automatic staleness block (see the recipe's Stop Conditions)"
+  ],
+  "quality_notes": "mid-market rate snapshot as_of=2026-08-09, 3 day(s) old at check time"
+}
