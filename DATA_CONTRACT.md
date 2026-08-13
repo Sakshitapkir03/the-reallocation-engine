@@ -81,3 +81,29 @@ Rule: check privacy and size before committing generated ATS/job-search files.
   already exists.
 - Avoid committing files over GitHub's practical size limits; split or move
   large files before publishing.
+
+---
+
+## TrueRate Remittance Cost Audit — addition (2026-08-11)
+
+*Appended by the `truerate-remittance-cost-audit` contribution. Domain
+note: this is a personal-finance transparency tool, not a job-search/
+visa-evidence component — see `PR_DESCRIPTION.md` for the full disclosure
+of that mismatch. The table below follows this file's existing
+verified-vs-inferred convention.*
+
+| Field | Label | Detail |
+|---|---|---|
+| Mid-market USD/INR rate (snapshot) | record | 6-source corroborated median, fetched via web research 2026-08-09. One conflicting source found and excluded — see `reports/generated/truerate-plausibility-audit.md`. |
+| Mid-market USD/INR rate (live) | external-source | Calls `api.frankfurter.dev`; written but unexecuted end-to-end in the build sandbox (no network to install `httpx`). |
+| Wise fee structure (0.66% + $1.70) | record | Secondary source (feeprobe.com) citing Wise's own published pricing, dated 2026-05-22. |
+| Remitly fee/markup range (0.4%–1.4%) | model-inference bounded by record | Sourced from a competitor's (Wise's) published analysis of Remitly — a real conflict-of-interest caveat, named explicitly in `scripts/tools/truerate_logic.py`. |
+| Historical 14-day USD/INR sample | script-output derived from record | Derived from real ECB/Frankfurter cross-rates fetched during this build; small sample, explicitly not a full-history claim. |
+| Timing analysis statistics | script-output | Deterministic computation over the record above; no forecasting. |
+| Wise volume-discount tiers | missing | Known to exist, not modeled — see the recipe's "Cannot Verify Without More Work" section. |
+| Rate staleness auto-block | missing | Currently only raises a flag (Step 4); does not block the run. Named as an open TODO on the recipe. |
+
+**Ethics gate for this addition:** No personal transfer data, account
+numbers, or names are stored anywhere in this contribution. Run
+`python3 scripts/tools/truerate-verify-provenance.py` to re-check source
+presence before trusting any number this recipe reports.
