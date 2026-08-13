@@ -1,0 +1,12 @@
+[
+  {
+    "role_id": "SYNTHETIC-timeline-gate-test",
+    "company": "[CONSTRUCTED TEST FIXTURE -- not a real posting]",
+    "title": "High sponsorship and fit, but an impossible start date (timeline factor ~0)",
+    "_note": "This role is deliberately constructed to isolate the timeline gate variable while holding sponsorship and fit high. It exists only to test that role-scorer.mjs's timeline factor behaves as a multiplicative gate, per Ch.11's explicit claim: 'A timeline you cannot meet... does the same [zeroes the composite]. No amount of fit or sponsorship can carry a role through a gate that is closed.' Do not use this as a real example anywhere else.",
+    "sponsorship": { "p": 0.9, "tier": "Proven", "source": "record" },
+    "fit": { "p": 0.85, "source": "model-judgment" },
+    "liveness": { "factor": 1.0, "source": "record" },
+    "timeline": { "factor": 0.02, "source": "your-input" }
+  }
+]
