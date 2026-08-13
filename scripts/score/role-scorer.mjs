@@ -23,6 +23,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // ───────────────────────────────────────────────────────────────────────────
 // CONFIG — every weight/threshold carries its provenance. Defaults reproduce
@@ -30,7 +31,7 @@ import path from 'node:path';
 // chapter (its footnote flags them against the system design document); do not
 // treat them as settled — confirm before publication.
 // ───────────────────────────────────────────────────────────────────────────
-const CONFIG = {
+export const CONFIG = {
   weights: {
     sponsorship: 0.35,   // [Ch.11] stated. Profile-conditional (see applyProfile).
     fit: 0.30,           // [Ch.11] stated. Model judgment.
@@ -53,7 +54,7 @@ const SRC = { record: 'record', model: 'model-judgment', input: 'your-input' };
 // ── profile-conditional weighting (design doc: weights are a function of the
 //    profile, not constants). If the candidate doesn't need sponsorship, the
 //    sponsorship term stops being a binding constraint and its weight → 0. ──
-function applyProfile(weights, profile) {
+export function applyProfile(weights, profile) {
   const w = { ...weights };
   const auth = (profile?.authorization || '').toLowerCase();
   const needsSponsor = profile == null ? true
@@ -65,7 +66,7 @@ function applyProfile(weights, profile) {
 const num = (x) => (typeof x === 'number' && isFinite(x) ? x : null);
 const fmt = (x) => (x == null ? '—' : Number(x).toFixed(3));
 
-function scoreRole(role, weights, needsSponsor) {
+export function scoreRole(role, weights, needsSponsor) {
   // collect votes present on the record, each with value + source
   const votes = [];
   const push = (key, obj, defSrc) => {
@@ -182,4 +183,10 @@ function main() {
   for (const s of scored) if (s.override?._warning) console.warn(`  ! ${s.company}: ${s.override._warning}`);
 }
 
-main();
+// Robust entry-point guard: resolve BOTH sides to absolute, decoded paths
+// before comparing -- a raw string comparison silently fails on relative
+// invocation or paths containing spaces (found and fixed during this build).
+const isMainModule = path.resolve(process.argv[1] || '') === fileURLToPath(import.meta.url);
+if (isMainModule) {
+  main();
+}
