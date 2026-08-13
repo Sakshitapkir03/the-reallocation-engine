@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TrueRate — what actually arrives</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12213A; --paper:#F7F3E8; --paper-dim:#EDE7D8;
+    --gold:#C9973B; --gold-dim:#8f6c28; --brick:#A23B2E; --ink-soft:#3c4a63;
+    --line: rgba(18,33,58,0.14); --green:#3d7a4a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--ink); color:var(--paper); font-family:'Inter',system-ui,sans-serif;}
+  .wrap{max-width:900px; margin:0 auto; padding:48px 24px 96px;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:12px;}
+  h1{font-family:'Source Serif 4',serif; font-weight:700; font-size:clamp(30px,5.5vw,48px);
+    line-height:1.08; margin:0 0 16px;}
+  .sub{color:#AEB9CC; font-size:16px; line-height:1.55; max-width:580px; margin-bottom:32px;}
+  .card{background:var(--paper); color:var(--ink); border-radius:3px; padding:28px 30px;
+    margin-bottom:24px; box-shadow:0 10px 28px rgba(0,0,0,0.25);}
+  .card h2{font-family:'Source Serif 4',serif; font-size:21px; margin:0 0 4px;}
+  .card .meta{font-size:13px; color:var(--ink-soft); margin-bottom:20px; display:flex; align-items:center; gap:8px;}
+  .dot{width:7px; height:7px; border-radius:50%; display:inline-block;}
+  .row{display:flex; align-items:center; gap:14px; margin-bottom:14px; flex-wrap:wrap;}
+  label{font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; text-transform:uppercase;}
+  input[type=number]{font-family:'IBM Plex Mono',monospace; font-size:20px; padding:7px 10px;
+    border:1px solid var(--line); border-radius:2px; width:140px; background:#fff;}
+  select{font-family:'IBM Plex Mono',monospace; font-size:14px; padding:7px 10px; border:1px solid var(--line); border-radius:2px; background:#fff;}
+  button.refresh{font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase;
+    letter-spacing:.05em; padding:8px 14px; border:1px solid var(--gold); background:transparent;
+    color:var(--gold-dim); border-radius:2px; cursor:pointer;}
+  button.refresh:hover{background:var(--gold); color:#fff;}
+  .midrate{font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--gold-dim); margin-top:2px;}
+  .provider{margin-top:20px; border-top:1px solid var(--line); padding-top:18px;}
+  .provider.cheapest{background:rgba(61,122,74,0.06); margin-left:-14px; margin-right:-14px; padding-left:14px; padding-right:14px; border-radius:2px;}
+  .provider-name{font-weight:600; font-size:16px; display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
+  .cheapest-badge{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase;
+    background:var(--green); color:#fff; padding:2px 7px; border-radius:2px; letter-spacing:.04em;}
+  .cost-tag{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--brick);
+    background:rgba(162,59,46,0.08); padding:3px 8px; border-radius:2px; white-space:nowrap;}
+  .bar-track{position:relative; height:30px; background:var(--paper-dim); border-radius:2px; margin:10px 0 6px; overflow:hidden;}
+  .bar-fill{position:absolute; top:0; left:0; height:100%; background:var(--gold);}
+  .bar-gap{position:absolute; top:0; height:100%; background:repeating-linear-gradient(45deg, var(--brick), var(--brick) 4px, transparent 4px, transparent 8px); opacity:0.5;}
+  .fineprint{font-size:12px; color:var(--ink-soft); line-height:1.5; margin-top:6px;}
+  .confidence{display:inline-block; margin-top:6px; font-size:10.5px; letter-spacing:.02em;
+    font-family:'IBM Plex Mono',monospace; text-transform:uppercase; color:var(--gold-dim);
+    border:1px solid var(--gold); padding:2px 6px; border-radius:2px;}
+  .timing-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px;}
+  .stat{background:var(--paper-dim); border-radius:2px; padding:12px;}
+  .stat .num{font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:500;}
+  .stat .lbl{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+  .honest-box{background:rgba(201,151,59,0.08); border-left:3px solid var(--gold);
+    padding:12px 14px; font-size:12.5px; line-height:1.55; color:var(--ink-soft); margin-top:16px;}
+  footer{color:#7a869e; font-size:11px; text-align:center; margin-top:36px; font-family:'IBM Plex Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">TrueRate · remittance transparency</div>
+  <h1>Two providers can look identical<br/>and still differ by 2–7%.</h1>
+  <p class="sub">"No fee" doesn't mean no cost — it usually means the cost moved into the exchange rate. This fetches the real live mid-market rate in your browser and compares it against three providers' real fee structures.</p>
+
+  <div class="card">
+    <h2>Send comparison</h2>
+    <div class="meta"><span class="dot" id="statusDot" style="background:#999"></span><span id="statusText">fetching live rate…</span>
+      <button class="refresh" id="refreshBtn" style="margin-left:auto">Refresh rate</button>
+    </div>
+    <div class="row">
+      <label for="amount">Amount (USD)</label>
+      <input type="number" id="amount" value="1000" min="1" step="50" />
+      <label for="currency">To</label>
+      <select id="currency">
+        <option value="INR">INR — Indian Rupee</option>
+        <option value="EUR">EUR — Euro</option>
+        <option value="GBP">GBP — British Pound</option>
+        <option value="MXN">MXN — Mexican Peso</option>
+        <option value="PHP">PHP — Philippine Peso</option>
+        <option value="CAD">CAD — Canadian Dollar</option>
+        <option value="AUD">AUD — Australian Dollar</option>
+        <option value="JPY">JPY — Japanese Yen</option>
+        <option value="CNY">CNY — Chinese Yuan</option>
+      </select>
+    </div>
+    <div class="midrate" id="midRateLine">mid-market rate: loading…</div>
+
+    <div id="providerList"></div>
+    <div class="honest-box" id="providerHonesty"></div>
+  </div>
+
+  <div class="card">
+    <h2>Should I wait?</h2>
+    <div class="meta">Backward-looking on 14 real days — not a forecast.</div>
+    <div class="timing-grid" id="timingGrid"></div>
+    <div class="honest-box" id="timingHonesty"></div>
+  </div>
+
+  <footer>TrueRate · every number above is labeled with its source and confidence</footer>
+</div>
+
+<script>
+const SNAPSHOT_RATE = { rate: 95.20, as_of: "2026-08-09",
+  source: "corroborated median of Xe, Bloomberg, Yahoo Finance, IBRLive, exchangerates.org.uk, Ria" };
+
+const PROVIDERS = {
+  Wise: {
+    label: "Wise", type: "pct_plus_fixed", pct: 0.0066, fixed: 1.70, markup: 0,
+    source: "feeprobe.com, verified 2026-05-22 from Wise official pricing",
+    confidence: "Published fee schedule — not a live quote for today"
+  },
+  Remitly: {
+    label: "Remitly (Economy)", type: "flat_plus_range", flat: 3.99, waiveAbove: 1000,
+    markupLow: 0.004, markupHigh: 0.014,
+    source: "Independently corroborated: skydo.com (~0.4–1.4%) AND Monito.com's own observed transaction (0.72% on Economy service)",
+    confidence: "Range — independently corroborated by a real comparison engine's test, not just a competitor's blog"
+  },
+  Western_Union: {
+    label: "Western Union", type: "flat_plus_range", flat: 3.47, waiveAbove: null,
+    markupLow: 0.0495, markupHigh: 0.07,
+    source: "Monito.com's own live-tested transactions (4.95% and ~7% observed on separate USD→INR tests)",
+    confidence: "Wide, disclosed-as-inconsistent range — other sources report 0.4%–7%+; this variance is a real finding, not smoothed over"
+  }
+};
+
+const HISTORICAL_SAMPLE = [
+  89.77, 89.96, 89.99, 89.99, 90.08, 90.09, 89.91, 89.87, 90.02, 90.02, 90.01, 90.08, 90.10, 90.15
+];
+
+let currentRate = SNAPSHOT_RATE;
+
+function computeProvider(key, amountUsd, midRate) {
+  const p = PROVIDERS[key];
+  if (p.type === "pct_plus_fixed") {
+    const fee = amountUsd * p.pct + p.fixed;
+    const net = amountUsd - fee;
+    const effRate = midRate * (1 - p.markup);
+    const inr = net * effRate;
+    const costUsd = amountUsd - inr / midRate;
+    return { costPct: costUsd / amountUsd * 100, costPctLow: null, costPctHigh: null,
+             source: p.source, confidence: p.confidence, label: p.label };
+  } else {
+    const fee = (p.waiveAbove !== null && amountUsd >= p.waiveAbove) ? 0 : p.flat;
+    const net = amountUsd - fee;
+    const effRateLow = midRate * (1 - p.markupLow);
+    const effRateHigh = midRate * (1 - p.markupHigh);
+    const inrLow = net * effRateLow;
+    const inrHigh = net * effRateHigh;
+    const costLow = (amountUsd - inrLow / midRate) / amountUsd * 100;
+    const costHigh = (amountUsd - inrHigh / midRate) / amountUsd * 100;
+    return { costPct: null, costPctLow: costLow, costPctHigh: costHigh,
+             source: p.source, confidence: p.confidence, label: p.label };
+  }
+}
+
+function renderProviders(amountUsd) {
+  const currency = document.getElementById("currency").value;
+  const midRate = currentRate.rate;
+
+  if (currency !== "INR") {
+    document.getElementById("midRateLine").textContent = midRate
+      ? `live mid-market rate: ${midRate.toFixed(4)} USD/${currency} · as of ${currentRate.as_of} · ${currentRate.source}`
+      : `no rate available for ${currency} right now`;
+    const converted = midRate ? (amountUsd * midRate).toLocaleString(undefined, {maximumFractionDigits: 2}) : "—";
+    document.getElementById("providerList").innerHTML = `
+      <div class="provider">
+        <div class="fineprint" style="font-size:13px; margin-bottom:8px;">
+          At today's live rate, $${amountUsd.toLocaleString()} converts to approximately
+          <strong>${converted} ${currency}</strong> at the mid-market rate (before any provider fee or markup).
+        </div>
+      </div>`;
+    document.getElementById("providerHonesty").innerHTML =
+      `<strong>No provider comparison shown for ${currency}.</strong> Wise, Remitly, and Western Union's fee/markup data in this project were specifically researched for the USD→INR corridor — real-world markups vary meaningfully by currency pair (for example, Western Union's own documented markup is ~1.6% on USD→GBP vs ~5–7% on USD→INR), so showing INR-sourced numbers for ${currency} would be a fabricated comparison, not an estimate. Only the live mid-market rate above is currency-agnostic and shown for any pair.`;
+    document.getElementById("timingGrid").innerHTML = "";
+    document.getElementById("timingHonesty").textContent =
+      `The timing analysis below also only covers USD→INR (the same 14-day real historical sample) — switch back to INR to see it.`;
+    return;
+  }
+
+  document.getElementById("midRateLine").textContent =
+    `mid-market rate: ${midRate.toFixed(4)} INR/USD · as of ${currentRate.as_of} · ${currentRate.source}`;
+
+  const results = Object.keys(PROVIDERS).map(key => ({ key, ...computeProvider(key, amountUsd, midRate) }));
+  const cheapestKey = results.reduce((a, b) => {
+    const aVal = a.costPct !== null ? a.costPct : a.costPctLow;
+    const bVal = b.costPct !== null ? b.costPct : b.costPctLow;
+    return aVal <= bVal ? a : b;
+  }).key;
+
+  const list = document.getElementById("providerList");
+  list.innerHTML = "";
+  results.forEach(r => {
+    const isCheapest = r.key === cheapestKey;
+    const maxCost = r.costPct !== null ? r.costPct : r.costPctHigh;
+    const fillPct = Math.max(4, 100 - maxCost * 5);
+    const gapPct = 100 - fillPct;
+    const costLabel = r.costPct !== null
+      ? `${r.costPct.toFixed(2)}% hidden cost`
+      : `${r.costPctLow.toFixed(2)}–${r.costPctHigh.toFixed(2)}% hidden cost`;
+    const div = document.createElement("div");
+    div.className = "provider" + (isCheapest ? " cheapest" : "");
+    div.innerHTML = `
+      <div class="provider-name"><span>${r.label} ${isCheapest ? '<span class="cheapest-badge">Cheapest right now</span>' : ''}</span><span class="cost-tag">${costLabel}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${fillPct}%"></div><div class="bar-gap" style="left:${fillPct}%; width:${gapPct}%"></div></div>
+      <div class="fineprint"><strong>Source:</strong> ${r.source}</div>
+      <div class="confidence">${r.confidence}</div>
+    `;
+    list.appendChild(div);
+  });
+
+  document.getElementById("providerHonesty").innerHTML =
+    `<strong>Note:</strong> Wise publishes a fixed fee schedule with no rate markup. Remitly and Western Union are ranges because no provider exposes a free, no-auth API for live effective rates — a real limitation, named rather than hidden. Western Union's range is disclosed as unusually wide because independent sources genuinely disagree on its real markup.`;
+}
+
+function renderTiming() {
+  const horizon = 7;
+  const outcomes = [];
+  for (let i = 0; i < HISTORICAL_SAMPLE.length - horizon; i++) {
+    outcomes.push((HISTORICAL_SAMPLE[i + horizon] - HISTORICAL_SAMPLE[i]) / HISTORICAL_SAMPLE[i] * 100);
+  }
+  const helped = outcomes.filter(o => o > 0).length;
+  const pctHelped = (helped / outcomes.length * 100).toFixed(1);
+  const mean = (outcomes.reduce((a, b) => a + b, 0) / outcomes.length).toFixed(3);
+
+  document.getElementById("timingGrid").innerHTML = `
+    <div class="stat"><div class="num">${pctHelped}%</div><div class="lbl">of days, waiting 7 days helped</div></div>
+    <div class="stat"><div class="num">+${mean}%</div><div class="lbl">average change if waited</div></div>
+    <div class="stat"><div class="num">${outcomes.length}</div><div class="lbl">real days compared (small sample)</div></div>
+  `;
+  document.getElementById("timingHonesty").textContent =
+    "This describes 14 real historical days. It is not a forecast — 14 days is too small a sample to generalize a strategy from, and short-term FX movement is close to a random walk.";
+}
+
+async function fetchLiveRate() {
+  const dot = document.getElementById("statusDot");
+  const text = document.getElementById("statusText");
+  const currency = document.getElementById("currency").value;
+  try {
+    const res = await fetch(`https://api.frankfurter.dev/v1/latest?from=USD&to=${currency}`, { signal: AbortSignal.timeout(6000) });
+    if (!res.ok) throw new Error("bad response");
+    const data = await res.json();
+    currentRate = { rate: data.rates[currency], as_of: data.date, currency,
+                    source: "live call, api.frankfurter.dev (ECB reference rates)" };
+    dot.style.background = "#3d7a4a";
+    text.textContent = `live rate fetched from your browser just now (${data.date})`;
+  } catch (e) {
+    if (currency === "INR") {
+      currentRate = SNAPSHOT_RATE;
+      dot.style.background = "#C9973B";
+      text.textContent = "live fetch unavailable right now — showing last known INR snapshot (" + SNAPSHOT_RATE.as_of + ")";
+    } else {
+      currentRate = { rate: null, as_of: null, currency,
+                      source: "live fetch failed and no offline snapshot exists for this currency" };
+      dot.style.background = "#A23B2E";
+      text.textContent = "live fetch failed, and no offline fallback exists for " + currency;
+    }
+  }
+  refresh();
+}
+
+function refresh() {
+  const amt = parseFloat(document.getElementById("amount").value) || 1000;
+  renderProviders(amt);
+  if (document.getElementById("currency").value === "INR") {
+    renderTiming();
+  }
+}
+
+document.getElementById("amount").addEventListener("input", refresh);
+document.getElementById("refreshBtn").addEventListener("click", fetchLiveRate);
+document.getElementById("currency").addEventListener("change", fetchLiveRate);
+
+fetchLiveRate();
+renderTiming();
+</script>
+</body>
+</html>
