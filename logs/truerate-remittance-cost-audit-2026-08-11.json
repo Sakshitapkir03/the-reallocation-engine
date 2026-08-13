@@ -1,0 +1,41 @@
+{
+  "workflow": "truerate-remittance-cost-audit",
+  "run_id": "truerate-2026-08-11",
+  "mode": "sample",
+  "steps_completed": [
+    "verify-provenance",
+    "ingest-inputs",
+    "validate-data-shape",
+    "transform-quality-check",
+    "run-approved-tools",
+    "produce-human-report"
+  ],
+  "records_seen": 2,
+  "rejects": [],
+  "duplicates": [],
+  "flags": [
+    "mid_market_rate snapshot is 2 day(s) old (as_of=2026-08-09) -- treat as potentially stale; this recipe has NOT yet implemented an automatic staleness block (see the recipe's Stop Conditions)"
+  ],
+  "stop_conditions": [],
+  "todo_items": [
+    "automatic staleness block (see recipe Stop Conditions)",
+    "live rate path unverified end-to-end (no network in build sandbox)"
+  ],
+  "source_files": [
+    "reports/generated/truerate-plausibility-audit.md",
+    "inline citation in scripts/tools/truerate_logic.py",
+    "inline citation in scripts/tools/truerate_logic.py",
+    "derived from api.frankfurter.dev during build; see truerate-plausibility-audit.md"
+  ],
+  "gate_decisions": "none required -- read-only computation, no live/external action",
+  "generated_at": "2026-08-11T14:32:55.559679+00:00",
+  "raw_output_paths": [
+    "data/raw/truerate-remittance-cost-audit/ingested-inputs.json"
+  ],
+  "verified_output_paths": [
+    "data/verified/truerate-remittance-cost-audit/data-shape-check.json",
+    "data/verified/truerate-remittance-cost-audit/quality-checked.json",
+    "data/verified/truerate-remittance-cost-audit/comparison-result.json"
+  ],
+  "report_path": "reports/generated/truerate-remittance-cost-audit-2026-08-11.md"
+}

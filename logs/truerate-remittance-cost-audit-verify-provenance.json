@@ -1,0 +1,47 @@
+{
+  "workflow": "truerate-remittance-cost-audit",
+  "step": "verify-provenance",
+  "source_paths": [
+    "reports/generated/truerate-plausibility-audit.md",
+    "inline citation in scripts/tools/truerate_logic.py",
+    "inline citation in scripts/tools/truerate_logic.py",
+    "inline citation in scripts/tools/truerate_logic.py",
+    "derived from api.frankfurter.dev during build; see truerate-plausibility-audit.md"
+  ],
+  "exists": true,
+  "parsed_ok": true,
+  "approval_state": "not_required",
+  "checked_at": "2026-08-12T17:48:21.566628+00:00",
+  "checks": [
+    {
+      "fact": "mid_market_rate_snapshot",
+      "source_path": "reports/generated/truerate-plausibility-audit.md",
+      "source_present": true,
+      "parsed_ok": true
+    },
+    {
+      "fact": "provider_fee_structure:Wise",
+      "source_path": "inline citation in scripts/tools/truerate_logic.py",
+      "source_present": true,
+      "parsed_ok": true
+    },
+    {
+      "fact": "provider_fee_structure:Remitly_Economy",
+      "source_path": "inline citation in scripts/tools/truerate_logic.py",
+      "source_present": true,
+      "parsed_ok": true
+    },
+    {
+      "fact": "provider_fee_structure:Western_Union",
+      "source_path": "inline citation in scripts/tools/truerate_logic.py",
+      "source_present": true,
+      "parsed_ok": true
+    },
+    {
+      "fact": "historical_usd_inr_sample",
+      "source_path": "derived from api.frankfurter.dev during build; see truerate-plausibility-audit.md",
+      "source_present": true,
+      "parsed_ok": true
+    }
+  ]
+}
