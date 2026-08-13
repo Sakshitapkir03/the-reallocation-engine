@@ -150,3 +150,45 @@ private emails, or sensitive application notes.
 - **Rebuilt:** `node scripts/build-instructions.mjs --promote` → `AGENTS.md` + `CLAUDE.md` regenerated; `CLAUDE.md` now imports `@SNICKERDOODLE.md`.
 - **Untouched:** `data/` CSVs (real company names containing "mycroft") and prior RUN_LOG history (append-only).
 - **Result:** conformance + doctor green; no stale `MYCROFT.md` outside data/history.
+## 2026-08-11 — TrueRate remittance cost audit, first real run
+
+- **Recipe:** truerate-remittance-cost-audit (new — domain mismatch disclosed; not a job-search/visa-evidence component)
+- **Inputs:** `data/raw/truerate-remittance-cost-audit/run-envelope.json` (amount_usd=1000, providers=[Wise, Remitly_Economy], horizon_days=7, sample_mode=true)
+- **Outputs:** `data/verified/truerate-remittance-cost-audit/{data-shape-check,quality-checked,comparison-result}.json`, `logs/truerate-remittance-cost-audit-2026-08-11.json`, `reports/generated/truerate-remittance-cost-audit-2026-08-11.md`
+- **Result:** All 6 steps ran end to end with no errors. Wise estimated hidden cost 0.83% on $1,000; Remitly estimated 0.4%–1.4% (range). Timing: 85.7% of 7-day waits helped in the 14-day real sample (explicitly not generalized).
+- **Open issues:** Mid-market snapshot was flagged as 2 days stale by Step 4 (staleness auto-block not yet implemented — flag only). Live rate path (`get_mid_market_rate_live`) unverified end-to-end — no network access in build sandbox to install `httpx`/test the real Frankfurter API call.
+
+## 2026-07-17 — case-backend-opt-sponsorship-triage v0.1.0
+
+- **Recipe:** case-backend-opt-sponsorship-triage
+- **Runner:** Sakshi Tapkir
+- **Inputs:** public Scale AI posting (Software Engineer, Enterprise AI,
+  https://job-boards.greenhouse.io/scaleai/jobs/4513943005); break-test
+  ADP Workforce Now-hosted posting; `data/80-days-to-stay/data/SEC_DOL_H1b_data_mapped.csv`;
+  `data/bls/compact/soc_occupation_compact.csv`; `data/examples/ch11-roles.json` (sample only)
+- **Commands:** `npm run verify`; `npm run doctor`; `npm run ats:liveness -- <Scale AI URL>`;
+  `npm run ats:liveness -- <ADP URL>`; `grep -i "scale ai"` / `grep -i "^scale"` against sponsorship
+  CSV; `npm run score -- data/examples/ch11-roles.json`; `grep -i "15-1252"` against SOC compact table
+- **Outputs:** `assignments/submissions/sakshi-tapkir/worked-run.md`;
+  `assignments/submissions/sakshi-tapkir/domain-justification.md`;
+  `recipes/case-backend-opt-sponsorship-triage.md`
+- **Result:** Gate 1 pass, Gate 2 pass (Scale AI active), Gate 3 pass (Aug 29 2026 start fits OPT,
+  STEM OPT self-assessed not DSO-confirmed), Gate 4 missing (no sponsorship row for Scale AI),
+  Gate 5 fail (posting requires 4+ years post-grad experience, candidate does not have this),
+  Gate 6 pass (SOC 15-1252, cognitive_pivot_score 3.834), Gate 7 pass. Final classification: Skip.
+  Deliberate break attempt against the ADP posting returned expired/insufficient-content and the
+  mode correctly refused to score it.
+- **Open issues:** real per-posting evidence-envelope builder still `[TODO: DEV]` in the recipe;
+  visa-timeline arithmetic script still `[TODO: DEV]`; entity-resolution against raw LCA data
+  still unverified; ADP-family ATS liveness parsing untested beyond this one URL.
+- **Privacy check:** confirmed no private/PII paths tracked (`npm run doctor`); no personal
+  application data, contacts, or outcomes committed to this recipe, worked-run doc, or this entry.
+
+## 2026-08-11 — TrueRate remittance cost audit, first real run
+
+- **Recipe:** truerate-remittance-cost-audit (new — domain mismatch disclosed; not a job-search/visa-evidence component)
+- **Inputs:** `data/raw/truerate-remittance-cost-audit/run-envelope.json` (amount_usd=1000, providers=[Wise, Remitly_Economy], horizon_days=7, sample_mode=true)
+- **Outputs:** `data/verified/truerate-remittance-cost-audit/{data-shape-check,quality-checked,comparison-result}.json`, `logs/truerate-remittance-cost-audit-2026-08-11.json`, `reports/generated/truerate-remittance-cost-audit-2026-08-11.md`
+- **Result:** All 6 steps ran end to end with no errors. Wise estimated hidden cost 0.83% on $1,000; Remitly estimated 0.4%–1.4% (range). Timing: 85.7% of 7-day waits helped in the 14-day real sample (explicitly not generalized).
+- **Open issues:** Mid-market snapshot was flagged as 2 days stale by Step 4 (staleness auto-block not yet implemented — flag only). Live rate path (`get_mid_market_rate_live`) unverified end-to-end — no network access in build sandbox to install `httpx`/test the real Frankfurter API call.
+>>>>>>> f8ab629 (Add truerate-remittance-cost-audit recipe (domain mismatch disclosed in PR))
