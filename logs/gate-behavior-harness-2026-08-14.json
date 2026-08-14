@@ -1,0 +1,56 @@
+{
+  "workflow": "gate-behavior-harness",
+  "run_id": "gate-behavior-harness-2026-08-14",
+  "part1_results": [
+    {
+      "name": "liveness gate zeroes composite despite high sponsorship (0.9) and fit (0.8)",
+      "pass": true,
+      "detail": "composite=0"
+    },
+    {
+      "name": "liveness-gated role is classified Skip",
+      "pass": true,
+      "detail": "recommendation=Skip"
+    },
+    {
+      "name": "Skip reason names the closed gate",
+      "pass": true,
+      "detail": "reason=\"gated: liveness ≈ 0.000 (a closed gate zeroes the composite regardless of votes)\""
+    },
+    {
+      "name": "near-zero timeline still classified Skip",
+      "pass": true,
+      "detail": "recommendation=Skip, composite=0.0114"
+    },
+    {
+      "name": "Skip forced by explicit gate check",
+      "pass": true,
+      "detail": "reason=\"gated: timeline ≈ 0.020 (a closed gate zeroes the composite regardless of votes)\""
+    },
+    {
+      "name": "exact-zero timeline zeroes composite exactly",
+      "pass": true,
+      "detail": "composite=0"
+    }
+  ],
+  "part2_results": [
+    {
+      "name": "[SELF-TEST] broken scorer: liveness=0 zeroes composite?",
+      "pass": false,
+      "detail": "composite=0.6825"
+    },
+    {
+      "name": "[SELF-TEST] broken scorer: ghost posting classified Skip?",
+      "pass": false,
+      "detail": "recommendation=Apply"
+    },
+    {
+      "name": "[SELF-TEST] broken scorer: timeline~0 zeroes composite?",
+      "pass": false,
+      "detail": "composite=0.773"
+    }
+  ],
+  "verdict": "VALID",
+  "generated_at": "2026-08-14T16:23:59.976Z",
+  "report_path": "reports/generated/gate-behavior-harness-2026-08-14.md"
+}

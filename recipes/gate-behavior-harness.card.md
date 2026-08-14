@@ -1,3 +1,11 @@
+---
+status: RUNNABLE-SAMPLE
+todos_open: 0
+last_gate: "sample-run, 2026-08-14, logs/RUN_LOG.md#2026-08-14"
+attestation: null
+recipe_version: 0.3.0
+---
+
 # Gate-Behavior Unit-Test Harness — Human Card
 
 *Companion file: `gate-behavior-harness.md` (the AI-facing recipe). Update
